@@ -1,0 +1,581 @@
+{% extends "base.html" %}
+
+{% block title %}Start Scraping - B2B Lead Scraper{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-search me-2"></i>
+            Start Lead Scraping
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    Scraping Configuration
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="scrapingForm">
+                    <!-- Industries -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-industry me-2"></i>
+                            Target Industries
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="manufacturing" id="manufacturing" checked>
+                                    <label class="form-check-label" for="manufacturing">
+                                        Manufacturing
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="woodworking" id="woodworking" checked>
+                                    <label class="form-check-label" for="woodworking">
+                                        Woodworking
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="metal fabrication" id="metal_fabrication" checked>
+                                    <label class="form-check-label" for="metal_fabrication">
+                                        Metal Fabrication
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="furniture" id="furniture" checked>
+                                    <label class="form-check-label" for="furniture">
+                                        Furniture
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="construction" id="construction" checked>
+                                    <label class="form-check-label" for="construction">
+                                        Construction
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="logistics" id="logistics" checked>
+                                    <label class="form-check-label" for="logistics">
+                                        Logistics
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="distribution" id="distribution" checked>
+                                    <label class="form-check-label" for="distribution">
+                                        Distribution
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="professional services" id="professional_services" checked>
+                                    <label class="form-check-label" for="professional_services">
+                                        Professional Services
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="healthcare" id="healthcare" checked>
+                                    <label class="form-check-label" for="healthcare">
+                                        Healthcare
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="dental" id="dental" checked>
+                                    <label class="form-check-label" for="dental">
+                                        Dental
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="law" id="law" checked>
+                                    <label class="form-check-label" for="law">
+                                        Law
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="accounting" id="accounting" checked>
+                                    <label class="form-check-label" for="accounting">
+                                        Accounting
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="real estate" id="real_estate" checked>
+                                    <label class="form-check-label" for="real_estate">
+                                        Real Estate
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="retail" id="retail" checked>
+                                    <label class="form-check-label" for="retail">
+                                        Retail
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="restaurant" id="restaurant" checked>
+                                    <label class="form-check-label" for="restaurant">
+                                        Restaurant
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="auto repair" id="auto_repair" checked>
+                                    <label class="form-check-label" for="auto_repair">
+                                        Auto Repair
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="landscaping" id="landscaping" checked>
+                                    <label class="form-check-label" for="landscaping">
+                                        Landscaping
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="cleaning" id="cleaning" checked>
+                                    <label class="form-check-label" for="cleaning">
+                                        Cleaning
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="consulting" id="consulting" checked>
+                                    <label class="form-check-label" for="consulting">
+                                        Consulting
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllIndustries()">Select All</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllIndustries()">Deselect All</button>
+                        </div>
+                    </div>
+
+                    <!-- Locations -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Target Locations (Kansas City Metro)
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Kansas City MO" id="kansas_city_mo" checked>
+                                    <label class="form-check-label" for="kansas_city_mo">
+                                        Kansas City, MO
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Kansas City KS" id="kansas_city_ks" checked>
+                                    <label class="form-check-label" for="kansas_city_ks">
+                                        Kansas City, KS
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Overland Park" id="overland_park" checked>
+                                    <label class="form-check-label" for="overland_park">
+                                        Overland Park
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Olathe" id="olathe" checked>
+                                    <label class="form-check-label" for="olathe">
+                                        Olathe
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Independence" id="independence" checked>
+                                    <label class="form-check-label" for="independence">
+                                        Independence
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Lee's Summit" id="lees_summit" checked>
+                                    <label class="form-check-label" for="lees_summit">
+                                        Lee's Summit
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Shawnee" id="shawnee" checked>
+                                    <label class="form-check-label" for="shawnee">
+                                        Shawnee
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Blue Springs" id="blue_springs" checked>
+                                    <label class="form-check-label" for="blue_springs">
+                                        Blue Springs
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Lenexa" id="lenexa" checked>
+                                    <label class="form-check-label" for="lenexa">
+                                        Lenexa
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Leawood" id="leawood" checked>
+                                    <label class="form-check-label" for="leawood">
+                                        Leawood
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllLocations()">Select All</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllLocations()">Deselect All</button>
+                        </div>
+                    </div>
+
+                    <!-- Company Size -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-users me-2"></i>
+                            Company Size (Employees)
+                        </label>
+                        <select class="form-select" id="employeeRange">
+                            <option value="10-50" selected>10-50 employees (Target)</option>
+                            <option value="5-25">5-25 employees</option>
+                            <option value="25-100">25-100 employees</option>
+                            <option value="10-100">10-100 employees</option>
+                        </select>
+                    </div>
+
+                    <!-- Revenue Range -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-dollar-sign me-2"></i>
+                            Revenue Range
+                        </label>
+                        <select class="form-select" id="revenueRange">
+                            <option value="500K-2M" selected>$500K - $2M annually (Target)</option>
+                            <option value="250K-1M">$250K - $1M annually</option>
+                            <option value="1M-5M">$1M - $5M annually</option>
+                            <option value="500K-5M">$500K - $5M annually</option>
+                        </select>
+                    </div>
+
+                    <!-- Data Sources -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-database me-2"></i>
+                            Data Sources
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="google_maps" id="google_maps" checked>
+                                    <label class="form-check-label" for="google_maps">
+                                        <i class="fab fa-google me-1"></i> Google Maps
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="yelp" id="yelp" checked>
+                                    <label class="form-check-label" for="yelp">
+                                        <i class="fab fa-yelp me-1"></i> Yelp
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="linkedin" id="linkedin" checked>
+                                    <label class="form-check-label" for="linkedin">
+                                        <i class="fab fa-linkedin me-1"></i> LinkedIn
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="yellow_pages" id="yellow_pages" checked>
+                                    <label class="form-check-label" for="yellow_pages">
+                                        <i class="fas fa-phone me-1"></i> Yellow Pages
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="chamber_commerce" id="chamber_commerce" checked>
+                                    <label class="form-check-label" for="chamber_commerce">
+                                        <i class="fas fa-building me-1"></i> Chamber of Commerce
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="bbb" id="bbb" checked>
+                                    <label class="form-check-label" for="bbb">
+                                        <i class="fas fa-shield-alt me-1"></i> Better Business Bureau
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-sliders-h me-2"></i>
+                            Advanced Options
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="emailValidation" checked>
+                                    <label class="form-check-label" for="emailValidation">
+                                        Email Validation
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="duplicateRemoval" checked>
+                                    <label class="form-check-label" for="duplicateRemoval">
+                                        Duplicate Removal
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="contactEnrichment" checked>
+                                    <label class="form-check-label" for="contactEnrichment">
+                                        Contact Enrichment
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="leadScoring" checked>
+                                    <label class="form-check-label" for="leadScoring">
+                                        Lead Scoring
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="startScrapingBtn">
+                            <i class="fas fa-play me-2"></i>
+                            Start Scraping
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Job Status -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tasks me-2"></i>
+                    Recent Jobs
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="jobStatus">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <p>No recent jobs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scraping Tips -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Scraping Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Focus on industries with manual processes
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Target companies with 10-50 employees
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Prioritize family-owned businesses
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Look for growth indicators
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Avoid highly automated companies
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Scraping in Progress</h5>
+                <p class="text-muted">This may take several minutes depending on the scope.</p>
+                <div class="progress mt-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Form submission
+document.getElementById('scrapingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect form data
+    const formData = {
+        industries: getSelectedCheckboxes('input[type="checkbox"][value*="manufacturing"], input[type="checkbox"][value*="woodworking"], input[type="checkbox"][value*="metal"], input[type="checkbox"][value*="furniture"], input[type="checkbox"][value*="construction"], input[type="checkbox"][value*="logistics"], input[type="checkbox"][value*="distribution"], input[type="checkbox"][value*="professional"], input[type="checkbox"][value*="healthcare"], input[type="checkbox"][value*="dental"], input[type="checkbox"][value*="law"], input[type="checkbox"][value*="accounting"], input[type="checkbox"][value*="real estate"], input[type="checkbox"][value*="retail"], input[type="checkbox"][value*="restaurant"], input[type="checkbox"][value*="auto"], input[type="checkbox"][value*="landscaping"], input[type="checkbox"][value*="cleaning"], input[type="checkbox"][value*="consulting"]'),
+        locations: getSelectedCheckboxes('input[type="checkbox"][value*="Kansas City"], input[type="checkbox"][value*="Overland"], input[type="checkbox"][value*="Olathe"], input[type="checkbox"][value*="Independence"], input[type="checkbox"][value*="Lee"], input[type="checkbox"][value*="Shawnee"], input[type="checkbox"][value*="Blue"], input[type="checkbox"][value*="Lenexa"], input[type="checkbox"][value*="Leawood"]'),
+        employee_range: document.getElementById('employeeRange').value,
+        revenue_range: document.getElementById('revenueRange').value,
+        email_validation: document.getElementById('emailValidation').checked,
+        duplicate_removal: document.getElementById('duplicateRemoval').checked,
+        contact_enrichment: document.getElementById('contactEnrichment').checked,
+        lead_scoring: document.getElementById('leadScoring').checked
+    };
+    
+    // Validate selections
+    if (formData.industries.length === 0) {
+        showAlert('Please select at least one industry.', 'warning');
+        return;
+    }
+    
+    if (formData.locations.length === 0) {
+        showAlert('Please select at least one location.', 'warning');
+        return;
+    }
+    
+    // Show loading modal
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    loadingModal.show();
+    
+    // Disable submit button
+    document.getElementById('startScrapingBtn').disabled = true;
+    
+    // Start scraping
+    fetch('/scrape', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Scraping job started successfully! Job ID: ' + data.job_id, 'success');
+            loadingModal.hide();
+            
+            // Redirect to dashboard after a delay
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        } else {
+            throw new Error('Failed to start scraping job');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Failed to start scraping job. Please try again.', 'danger');
+        loadingModal.hide();
+        document.getElementById('startScrapingBtn').disabled = false;
+    });
+});
+
+// Helper functions
+function getSelectedCheckboxes(selector) {
+    const checkboxes = document.querySelectorAll(selector);
+    const selected = [];
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selected.push(checkbox.value);
+        }
+    });
+    return selected;
+}
+
+function selectAllIndustries() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][value*="manufacturing"], input[type="checkbox"][value*="woodworking"], input[type="checkbox"][value*="metal"], input[type="checkbox"][value*="furniture"], input[type="checkbox"][value*="construction"], input[type="checkbox"][value*="logistics"], input[type="checkbox"][value*="distribution"], input[type="checkbox"][value*="professional"], input[type="checkbox"][value*="healthcare"], input[type="checkbox"][value*="dental"], input[type="checkbox"][value*="law"], input[type="checkbox"][value*="accounting"], input[type="checkbox"][value*="real estate"], input[type="checkbox"][value*="retail"], input[type="checkbox"][value*="restaurant"], input[type="checkbox"][value*="auto"], input[type="checkbox"][value*="landscaping"], input[type="checkbox"][value*="cleaning"], input[type="checkbox"][value*="consulting"]');
+    checkboxes.forEach(checkbox => checkbox.checked = true);
+}
+
+function deselectAllIndustries() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][value*="manufacturing"], input[type="checkbox"][value*="woodworking"], input[type="checkbox"][value*="metal"], input[type="checkbox"][value*="furniture"], input[type="checkbox"][value*="construction"], input[type="checkbox"][value*="logistics"], input[type="checkbox"][value*="distribution"], input[type="checkbox"][value*="professional"], input[type="checkbox"][value*="healthcare"], input[type="checkbox"][value*="dental"], input[type="checkbox"][value*="law"], input[type="checkbox"][value*="accounting"], input[type="checkbox"][value*="real estate"], input[type="checkbox"][value*="retail"], input[type="checkbox"][value*="restaurant"], input[type="checkbox"][value*="auto"], input[type="checkbox"][value*="landscaping"], input[type="checkbox"][value*="cleaning"], input[type="checkbox"][value*="consulting"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+}
+
+function selectAllLocations() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][value*="Kansas City"], input[type="checkbox"][value*="Overland"], input[type="checkbox"][value*="Olathe"], input[type="checkbox"][value*="Independence"], input[type="checkbox"][value*="Lee"], input[type="checkbox"][value*="Shawnee"], input[type="checkbox"][value*="Blue"], input[type="checkbox"][value*="Lenexa"], input[type="checkbox"][value*="Leawood"]');
+    checkboxes.forEach(checkbox => checkbox.checked = true);
+}
+
+function deselectAllLocations() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][value*="Kansas City"], input[type="checkbox"][value*="Overland"], input[type="checkbox"][value*="Olathe"], input[type="checkbox"][value*="Independence"], input[type="checkbox"][value*="Lee"], input[type="checkbox"][value*="Shawnee"], input[type="checkbox"][value*="Blue"], input[type="checkbox"][value*="Lenexa"], input[type="checkbox"][value*="Leawood"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+}
+
+// Load recent jobs on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadRecentJobs();
+});
+
+function loadRecentJobs() {
+    fetch('/api/jobs')
+        .then(response => response.json())
+        .then(jobs => {
+            const jobStatus = document.getElementById('jobStatus');
+            
+            if (jobs.length === 0) {
+                jobStatus.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <p>No recent jobs</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let jobsHtml = '';
+            jobs.slice(0, 5).forEach(job => {
+                const statusClass = job.status === 'completed' ? 'success' : 
+                                  job.status === 'running' ? 'warning' : 
+                                  job.status === 'failed' ? 'danger' : 'secondary';
+                
+                jobsHtml += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <small class="text-muted">Job #${job.id}</small>
+                            <div class="badge bg-${statusClass}">${job.status}</div>
+                        </div>
+                        <small class="text-muted">${job.leads_found || 0} leads</small>
+                    </div>
+                `;
+            });
+            
+            jobStatus.innerHTML = jobsHtml;
+        })
+        .catch(error => {
+            console.error('Error loading jobs:', error);
+        });
+}
+</script>
+{% endblock %}

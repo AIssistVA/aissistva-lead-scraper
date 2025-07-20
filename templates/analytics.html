@@ -1,0 +1,418 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - B2B Lead Scraper{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-bar me-2"></i>
+            Analytics Dashboard
+        </h1>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50">Total Leads</h6>
+                        <h2 class="mb-0 text-white">{{ industry_stats | sum(attribute='count') }}</h2>
+                    </div>
+                    <div class="text-white-50">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50">High Priority</h6>
+                        <h2 class="mb-0 text-white">{{ priority_stats | selectattr('priority_score', '>=', 80) | sum(attribute='count') }}</h2>
+                    </div>
+                    <div class="text-white-50">
+                        <i class="fas fa-star fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50">Low Automation</h6>
+                        <h2 class="mb-0 text-white">{{ priority_stats | selectattr('automation_level', 'equalto', 'low') | sum(attribute='count') }}</h2>
+                    </div>
+                    <div class="text-white-50">
+                        <i class="fas fa-cogs fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50">Top Location</h6>
+                        <h2 class="mb-0 text-white">{{ location_stats | sort(attribute='count', reverse=true) | first | attr('city') or 'N/A' }}</h2>
+                    </div>
+                    <div class="text-white-50">
+                        <i class="fas fa-map-marker-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Industry Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="industryChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Location Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="locationChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Priority Score Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="priorityChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-doughnut me-2"></i>
+                    Automation Level Breakdown
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="automationChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Statistics -->
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Top Industries by Lead Count
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Industry</th>
+                                <th>Count</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set total_leads = industry_stats | sum(attribute='count') %}
+                            {% for industry in industry_stats | sort(attribute='count', reverse=true) | slice(0, 10) %}
+                            <tr>
+                                <td>{{ industry.industry or 'Unknown' }}</td>
+                                <td>{{ industry.count }}</td>
+                                <td>{{ "%.1f" | format(industry.count / total_leads * 100) }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-map me-2"></i>
+                    Top Locations by Lead Count
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>Count</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set total_leads = location_stats | sum(attribute='count') %}
+                            {% for location in location_stats | sort(attribute='count', reverse=true) | slice(0, 10) %}
+                            <tr>
+                                <td>{{ location.city or 'Unknown' }}</td>
+                                <td>{{ location.count }}</td>
+                                <td>{{ "%.1f" | format(location.count / total_leads * 100) }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lead Quality Analysis -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-analytics me-2"></i>
+                    Lead Quality Analysis
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="border rounded p-3">
+                            <h4 class="text-success">{{ priority_stats | selectattr('priority_score', '>=', 80) | sum(attribute='count') }}</h4>
+                            <p class="text-muted mb-0">High Quality Leads</p>
+                            <small class="text-success">Ready for immediate outreach</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="border rounded p-3">
+                            <h4 class="text-warning">{{ priority_stats | selectattr('priority_score', '>=', 60) | selectattr('priority_score', '<', 80) | sum(attribute='count') }}</h4>
+                            <p class="text-muted mb-0">Medium Quality Leads</p>
+                            <small class="text-warning">Requires additional research</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="border rounded p-3">
+                            <h4 class="text-danger">{{ priority_stats | selectattr('priority_score', '<', 60) | sum(attribute='count') }}</h4>
+                            <p class="text-muted mb-0">Low Quality Leads</p>
+                            <small class="text-danger">May not be suitable targets</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Industry Distribution Chart
+const industryCtx = document.getElementById('industryChart').getContext('2d');
+const industryData = {
+    labels: [
+        {% for industry in industry_stats | sort(attribute='count', reverse=true) | slice(0, 8) %}
+            '{{ industry.industry or "Unknown" }}',
+        {% endfor %}
+    ],
+    datasets: [{
+        data: [
+            {% for industry in industry_stats | sort(attribute='count', reverse=true) | slice(0, 8) %}
+                {{ industry.count }},
+            {% endfor %}
+        ],
+        backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40',
+            '#FF6384',
+            '#36A2EB'
+        ]
+    }]
+};
+
+new Chart(industryCtx, {
+    type: 'doughnut',
+    data: industryData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Location Distribution Chart
+const locationCtx = document.getElementById('locationChart').getContext('2d');
+const locationData = {
+    labels: [
+        {% for location in location_stats | sort(attribute='count', reverse=true) | slice(0, 8) %}
+            '{{ location.city or "Unknown" }}',
+        {% endfor %}
+    ],
+    datasets: [{
+        label: 'Number of Leads',
+        data: [
+            {% for location in location_stats | sort(attribute='count', reverse=true) | slice(0, 8) %}
+                {{ location.count }},
+            {% endfor %}
+        ],
+        backgroundColor: [
+            '#4BC0C0',
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#9966FF',
+            '#FF9F40',
+            '#FF6384',
+            '#36A2EB'
+        ],
+        borderWidth: 0
+    }]
+};
+
+new Chart(locationCtx, {
+    type: 'bar',
+    data: locationData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Priority Score Distribution Chart
+const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+const priorityData = {
+    labels: ['High (80-100)', 'Medium (60-79)', 'Low (0-59)'],
+    datasets: [{
+        label: 'Number of Leads',
+        data: [
+            {{ priority_stats | selectattr('priority_score', '>=', 80) | sum(attribute='count') }},
+            {{ priority_stats | selectattr('priority_score', '>=', 60) | selectattr('priority_score', '<', 80) | sum(attribute='count') }},
+            {{ priority_stats | selectattr('priority_score', '<', 60) | sum(attribute='count') }}
+        ],
+        backgroundColor: [
+            '#e74c3c',
+            '#f39c12',
+            '#27ae60'
+        ],
+        borderWidth: 0
+    }]
+};
+
+new Chart(priorityCtx, {
+    type: 'bar',
+    data: priorityData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Automation Level Chart
+const automationCtx = document.getElementById('automationChart').getContext('2d');
+const automationData = {
+    labels: ['Low Automation', 'Medium Automation', 'High Automation'],
+    datasets: [{
+        data: [60, 25, 15], // Sample data - replace with actual data
+        backgroundColor: [
+            '#27ae60',
+            '#f39c12',
+            '#e74c3c'
+        ]
+    }]
+};
+
+new Chart(automationCtx, {
+    type: 'doughnut',
+    data: automationData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Auto-refresh analytics every 5 minutes
+setInterval(function() {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}
