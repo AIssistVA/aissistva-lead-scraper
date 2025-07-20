@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+
+{% block title %}Leads - B2B Lead Scraper{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-users me-2"></i>
+                Leads Database
+            </h1>
+            <div>
+                <a href="{{ url_for('leads') }}?export=csv" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>
+                    Export CSV
+                </a>
+                <a href="{{ url_for('scrape') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>
+                    New Scrape
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-filter me-2"></i>
+                    Filters
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="filterForm" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Industry</label>
+                        <select class="form-select" id="industryFilter">
+                            <option value="">All Industries</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="woodworking">Woodworking</option>
+                            <option value="metal fabrication">Metal Fabrication</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="construction">Construction</option>
+                            <option value="logistics">Logistics</option>
+                            <option value="distribution">Distribution</option>
+                            <option value="professional services">Professional Services</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="dental">Dental</option>
+                            <option value="law">Law</option>
+                            <option value="accounting">Accounting</option>
+                            <option value="real estate">Real Estate</option>
+                            <option value="retail">Retail</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="auto repair">Auto Repair</option>
+                            <option value="landscaping">Landscaping</option>
+                            <option value="cleaning">Cleaning</option>
+                            <option value="consulting">Consulting</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Location</label>
+                        <select class="form-select" id="locationFilter">
+                            <option value="">All Locations</option>
+                            <option value="Kansas City">Kansas City</option>
+                            <option value="Overland Park">Overland Park</option>
+                            <option value="Olathe">Olathe</option>
+                            <option value="Independence">Independence</option>
+                            <option value="Lee's Summit">Lee's Summit</option>
+                            <option value="Shawnee">Shawnee</option>
+                            <option value="Blue Springs">Blue Springs</option>
+                            <option value="Lenexa">Lenexa</option>
+                            <option value="Leawood">Leawood</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" id="priorityFilter">
+                            <option value="">All Priorities</option>
+                            <option value="high">High (80-100)</option>
+                            <option value="medium">Medium (60-79)</option>
+                            <option value="low">Low (0-59)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Automation</label>
+                        <select class="form-select" id="automationFilter">
+                            <option value="">All Levels</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i>
+                                Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leads Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>
+                    Leads ({{ leads.total }} total)
+                </h5>
+                <div class="d-flex align-items-center">
+                    <label class="form-label me-2 mb-0">Sort by:</label>
+                    <select class="form-select form-select-sm" style="width: auto;" id="sortSelect">
+                        <option value="priority_score">Priority Score</option>
+                        <option value="company_name">Company Name</option>
+                        <option value="created_at">Date Added</option>
+                        <option value="industry">Industry</option>
+                        <option value="city">Location</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if leads.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="leadsTable">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Industry</th>
+                                <th>Location</th>
+                                <th>Priority</th>
+                                <th>Automation</th>
+                                <th>Contact</th>
+                                <th>Pain Points</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lead in leads.items %}
+                            <tr data-lead-id="{{ lead.id }}">
+                                <td>
+                                    <strong>{{ lead.company_name }}</strong>
+                                    {% if lead.website %}
+                                    <br><small class="text-muted">
+                                        <a href="{{ lead.website }}" target="_blank" class="text-decoration-none">
+                                            <i class="fas fa-external-link-alt me-1"></i>{{ lead.website }}
+                                        </a>
+                                    </small>
+                                    {% endif %}
+                                    <br><small class="text-muted">{{ lead.employee_count or 'Unknown' }} employees</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ lead.industry or 'Unknown' }}</span>
+                                </td>
+                                <td>
+                                    {{ lead.city }}, {{ lead.state }}
+                                </td>
+                                <td>
+                                    {% if lead.priority_score >= 80 %}
+                                        <span class="badge priority-high">High ({{ lead.priority_score }})</span>
+                                    {% elif lead.priority_score >= 60 %}
+                                        <span class="badge priority-medium">Medium ({{ lead.priority_score }})</span>
+                                    {% else %}
+                                        <span class="badge priority-low">Low ({{ lead.priority_score }})</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if lead.automation_level == 'low' %}
+                                        <span class="badge automation-low">Low</span>
+                                    {% elif lead.automation_level == 'medium' %}
+                                        <span class="badge automation-medium">Medium</span>
+                                    {% elif lead.automation_level == 'high' %}
+                                        <span class="badge automation-high">High</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if lead.contact_name %}
+                                        <strong>{{ lead.contact_name }}</strong><br>
+                                    {% endif %}
+                                    {% if lead.email %}
+                                        <small class="text-muted">{{ lead.email }}</small><br>
+                                    {% endif %}
+                                    {% if lead.phone %}
+                                        <small class="text-muted">{{ lead.phone }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if lead.pain_point_indicators %}
+                                        {% set pain_points = lead.pain_point_indicators | from_json %}
+                                        {% for point in pain_points[:3] %}
+                                            <span class="badge bg-warning text-dark me-1 mb-1">{{ point }}</span>
+                                        {% endfor %}
+                                        {% if pain_points | length > 3 %}
+                                            <span class="badge bg-secondary">+{{ pain_points | length - 3 }} more</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">None detected</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        {% if lead.linkedin_url %}
+                                        <a href="{{ lead.linkedin_url }}" target="_blank" class="btn btn-outline-primary" title="LinkedIn">
+                                            <i class="fab fa-linkedin"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if lead.email %}
+                                        <a href="mailto:{{ lead.email }}" class="btn btn-outline-success" title="Email">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if lead.phone %}
+                                        <a href="tel:{{ lead.phone }}" class="btn btn-outline-info" title="Call">
+                                            <i class="fas fa-phone"></i>
+                                        </a>
+                                        {% endif %}
+                                        <button class="btn btn-outline-secondary" onclick="showLeadDetails({{ lead.id }})" title="Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if leads.pages > 1 %}
+                <nav aria-label="Leads pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if leads.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('leads', page=leads.prev_num) }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for page_num in leads.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != leads.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('leads', page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if leads.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('leads', page=leads.next_num) }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No leads found</h5>
+                    <p class="text-muted">Try adjusting your filters or start a new scraping job.</p>
+                    <a href="{{ url_for('scrape') }}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>
+                        Start Scraping
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lead Details Modal -->
+<div class="modal fade" id="leadDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lead Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="leadDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="exportLead()">Export Lead</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentLeadId = null;
+
+// Filter form submission
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const params = new URLSearchParams();
+    
+    const industry = document.getElementById('industryFilter').value;
+    const location = document.getElementById('locationFilter').value;
+    const priority = document.getElementById('priorityFilter').value;
+    const automation = document.getElementById('automationFilter').value;
+    
+    if (industry) params.append('industry', industry);
+    if (location) params.append('location', location);
+    if (priority) params.append('priority', priority);
+    if (automation) params.append('automation', automation);
+    
+    window.location.href = '/leads?' + params.toString();
+});
+
+// Sort functionality
+document.getElementById('sortSelect').addEventListener('change', function() {
+    const sortBy = this.value;
+    const params = new URLSearchParams(window.location.search);
+    params.set('sort', sortBy);
+    window.location.href = '/leads?' + params.toString();
+});
+
+// Show lead details
+function showLeadDetails(leadId) {
+    currentLeadId = leadId;
+    
+    // Show loading
+    document.getElementById('leadDetailsContent').innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('leadDetailsModal'));
+    modal.show();
+    
+    // Load lead details
+    fetch(`/api/leads/${leadId}`)
+        .then(response => response.json())
+        .then(lead => {
+            document.getElementById('leadDetailsContent').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Company Information</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>Company:</strong></td><td>${lead.company_name}</td></tr>
+                            <tr><td><strong>Industry:</strong></td><td>${lead.industry || 'Unknown'}</td></tr>
+                            <tr><td><strong>Location:</strong></td><td>${lead.city}, ${lead.state}</td></tr>
+                            <tr><td><strong>Employees:</strong></td><td>${lead.employee_count || 'Unknown'}</td></tr>
+                            <tr><td><strong>Website:</strong></td><td>${lead.website ? `<a href="${lead.website}" target="_blank">${lead.website}</a>` : 'Not available'}</td></tr>
+                            <tr><td><strong>LinkedIn:</strong></td><td>${lead.linkedin_url ? `<a href="${lead.linkedin_url}" target="_blank">View Profile</a>` : 'Not available'}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact Information</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>Contact:</strong></td><td>${lead.contact_name || 'Not available'}</td></tr>
+                            <tr><td><strong>Email:</strong></td><td>${lead.email ? `<a href="mailto:${lead.email}">${lead.email}</a>` : 'Not available'}</td></tr>
+                            <tr><td><strong>Phone:</strong></td><td>${lead.phone ? `<a href="tel:${lead.phone}">${lead.phone}</a>` : 'Not available'}</td></tr>
+                        </table>
+                        
+                        <h6 class="mt-3">Scoring & Analysis</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>Priority Score:</strong></td><td>${lead.priority_score}/100</td></tr>
+                            <tr><td><strong>Automation Level:</strong></td><td>${lead.automation_level || 'Unknown'}</td></tr>
+                            <tr><td><strong>Source:</strong></td><td>${lead.source || 'Unknown'}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Pain Point Indicators</h6>
+                        <div id="painPoints">
+                            ${lead.pain_point_indicators && lead.pain_point_indicators.length > 0 ? 
+                                lead.pain_point_indicators.map(point => `<span class="badge bg-warning text-dark me-2 mb-2">${point}</span>`).join('') : 
+                                '<span class="text-muted">No pain points detected</span>'
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Quick Actions</h6>
+                        <div class="btn-group">
+                            ${lead.email ? `<a href="mailto:${lead.email}" class="btn btn-success"><i class="fas fa-envelope me-1"></i>Send Email</a>` : ''}
+                            ${lead.phone ? `<a href="tel:${lead.phone}" class="btn btn-info"><i class="fas fa-phone me-1"></i>Call</a>` : ''}
+                            ${lead.linkedin_url ? `<a href="${lead.linkedin_url}" target="_blank" class="btn btn-primary"><i class="fab fa-linkedin me-1"></i>LinkedIn</a>` : ''}
+                            ${lead.website ? `<a href="${lead.website}" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt me-1"></i>Visit Website</a>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            document.getElementById('leadDetailsContent').innerHTML = `
+                <div class="alert alert-danger">
+                    Error loading lead details. Please try again.
+                </div>
+            `;
+        });
+}
+
+// Export lead
+function exportLead() {
+    if (!currentLeadId) return;
+    
+    window.open(`/leads/export?lead_id=${currentLeadId}`, '_blank');
+}
+
+// Initialize filters from URL parameters
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get('industry')) {
+        document.getElementById('industryFilter').value = urlParams.get('industry');
+    }
+    if (urlParams.get('location')) {
+        document.getElementById('locationFilter').value = urlParams.get('location');
+    }
+    if (urlParams.get('priority')) {
+        document.getElementById('priorityFilter').value = urlParams.get('priority');
+    }
+    if (urlParams.get('automation')) {
+        document.getElementById('automationFilter').value = urlParams.get('automation');
+    }
+    if (urlParams.get('sort')) {
+        document.getElementById('sortSelect').value = urlParams.get('sort');
+    }
+});
+</script>
+{% endblock %}
